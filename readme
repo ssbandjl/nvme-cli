@@ -20,6 +20,7 @@ cmd->fn(argc, argv, cmd, plugin) -> static int discover_cmd
         read(fd, buf, BUF_SIZE)
       nvmf_get_log_page_discovery
       remove_ctrl
+    connect_ctrls
 
 
 
