@@ -22,11 +22,26 @@ cmd->fn(argc, argv, cmd, plugin) -> static int discover_cmd
       nvmf_get_log_page_discovery -> static int nvmf_get_log_page_discovery
         nvme_discovery_log
       remove_ctrl
+      nvmf_get_log_page_discovery -> static int nvmf_get_log_page_discovery -> /dev/nvme0
+        nvme_discovery_log -> int nvme_get_log -> nvme_get_log13 -> .opcode		= nvme_admin_get_log_page -> return ioctl(fd, ioctl_cmd, cmd)
+        enum nvme_admin_opcode nvme管理命令 -> linux/nvme.h
+      remove_ctrl
+      case DISC_OK
+      ret = connect_ctrls(log, numrec)
       case DISC_NO_LOG
     connect_ctrls
 
 
 
+#define PATH_NVME_FABRICS	"/dev/nvme-fabrics"
 
-/dev/nvme-fabrics
+ 
+
+nvme connect -t rdma -n "nqn.2016-06.io.spdk:cnode1" -a 192.168.80.100 -s 4420
+...
+connect_cmd -> int connect
+  argconfig_parse
+  build_options
+  add_ctrl
+
 
