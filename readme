@@ -6,7 +6,7 @@ client
 nvme discover -t rdma -a 192.168.80.100 -s 4420 #-s service id, port
 nvme connect -t rdma -n "nqn.2016-06.io.spdk:cnode1" -a 192.168.80.100 -s 4420
 
-gdb --args nvme discover -t rdma -a 175.17.53.73 -s 4420
+gdb --args nvme discover -t rdma -a 172.17.29.217 -s 4420 -> admin_passthru
 gdb --args /usr/sbin/nvme discover -t rdma -s 4420 -a 172.17.29.217
 nvme.c -> main -> int main(int argc, char **argv)
 handle_plugin -> int handle_plugin
