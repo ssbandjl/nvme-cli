@@ -15,22 +15,30 @@ handle_plugin -> int handle_plugin
 plugin->commands[i] -> COMMAND_LIST -> ENTRY("discover", "Discover NVMeoF subsystems", discover_cmd)
 cmd->fn(argc, argv, cmd, plugin) -> static int discover_cmd
   discover(desc, argc, argv, false) -> int discover(const char *desc, int argc, char **argv, bool connect)
+    argconfig_parse
     build_options -> static int build_options
     static int do_discover(char *argstr, bool connect) -> nqn=nqn.2014-08.org.nvmexpress.discovery,transport=rdma,traddr=172.17.29.217,trsvcid=4420,hostnqn=nqn.2014-08.org.nvmexpress:uuid:e4a72828-9b7f-454f-ab8a-60b2c57e2439,hostid=cee6f16a-0183-4d00-ac0f-58
-      add_ctrl -> static int add_ctrl(const char *argstr)
+      add_ctrl -> static int add_ctrl(const char *argstr) -> 控制器设备: /dev/nvme0
         open(PATH_NVME_FABRICS, O_RDWR)
-        write(fd, argstr, len) nqn=nqn.2014-08.org.nvmexpress.discovery,transport=rdma,traddr=175.17.53.73,trsvcid=4420,hostnqn=nqn.2014-08.org.nvmexpress:uuid:a8dce057-b5a2-492e-8da3-9cf328f401c7,hostid=a20d3ab6-2c0a-4335-8552-305
+        write(fd, argstr, len) -> 写设备, 触发内核驱动处理(nvmf_dev_write) -> nqn=nqn.2014-08.org.nvmexpress.discovery,transport=rdma,traddr=175.17.53.73,trsvcid=4420,hostnqn=nqn.2014-08.org.nvmexpress:uuid:a8dce057-b5a2-492e-8da3-9cf328f401c7,hostid=a20d3ab6-2c0a-4335-8552-305 -> 
+          Jul 12 11:13:56 s63 kernel: nvme nvme0: new ctrl: NQN "nqn.2014-08.org.nvmexpress.discovery", addr 172.17.29.65:4420
+          Jul 12 11:14:01 s63 systemd: Started Session 3337 of user root.
         read(fd, buf, BUF_SIZE)
       nvmf_get_log_page_discovery -> static int nvmf_get_log_page_discovery
         nvme_discovery_log
+          nvme_get_log
+            nvme_get_log13
       remove_ctrl
       nvmf_get_log_page_discovery -> static int nvmf_get_log_page_discovery -> /dev/nvme0
-        nvme_discovery_log -> int nvme_get_log -> nvme_get_log13 -> .opcode		= nvme_admin_get_log_page -> return ioctl(fd, ioctl_cmd, cmd)
+        nvme_discovery_log -> int nvme_get_log -> nvme_get_log13 -> .opcode		= nvme_admin_get_log_page -> return ioctl(fd, ioctl_cmd, cmd) -> 管理命令: nvme_admin_get_log_page		= 0x02
         enum nvme_admin_opcode nvme管理命令 -> linux/nvme.h
+        nvme_submit_admin_passthru
+          ioctl(fd, NVME_IOCTL_ADMIN_CMD, cmd) -> 转到内核驱动处理 -> nvme_dev_ioctl
       remove_ctrl
       case DISC_OK
       ret = connect_ctrls(log, numrec)
       case DISC_NO_LOG
+      print_discovery_log
     connect_ctrls
 
 
@@ -67,5 +75,24 @@ Node             SN                   Model                                    N
 
 ls /dev/nvme*
 tree -lL 1 /sys/class/misc/nvme-fabrics/
+
+
+
+
+static void print_discovery_log
+Discovery Log Number of Records 1, Generation counter 1
+=====Discovery Log Entry 0======
+trtype:  rdma
+adrfam:  ipv4
+subtype: nvme subsystem
+treq:    not required
+portid:  0
+trsvcid: 4420
+subnqn:  nqn.2022-06.io.spdk:cnode216
+traddr:  172.17.29.63
+rdma_prtype: not specified
+rdma_qptype: connected
+rdma_cms:    rdma-cm
+rdma_pkey: 0x0000
 
 
