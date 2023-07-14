@@ -54,9 +54,9 @@ main -> handle_plugin
 connect_cmd -> int connect
   ret = argconfig_parse(argc, argv, desc, command_line_options, &cfg
   build_options
-  instance = add_ctrl(argstr) -> static int add_ctrl
+  instance = add_ctrl(argstr) -> static int add_ctrl -> 添加控制器
     fd = open(PATH_NVME_FABRICS, O_RDWR) -> PATH_NVME_FABRICS	"/dev/nvme-fabrics"
-    if (write(fd, argstr, len) -> nqn=nvme-subsystem-name,transport=rdma,traddr=172.17.29.65,trsvcid=4421,hostnqn=nqn.2014-08.org.nvmexpress:uuid:3195faad-fe20-44d5-8ae4-291d29629c89,hostid=a872f1d1-daae-4da0-be86-5a36131e640b -> [root@s63 ~]# bpftrace -e 'kprobe:nvmf_dev_write{ printf("bt:%s\n", kstack); }' -> nvmf_dev_write
+    if (write(fd, argstr, len) -> nqn=nvme-subsystem-name,transport=rdma,traddr=172.17.29.65,trsvcid=4421,hostnqn=nqn.2014-08.org.nvmexpress:uuid:3195faad-fe20-44d5-8ae4-291d29629c89,hostid=a872f1d1-daae-4da0-be86-5a36131e640b -> [root@s63 ~]# bpftrace -e 'kprobe:nvmf_dev_write{ printf("%s\n", kstack); }' -> nvmf_dev_write
     len = read(fd, buf, BUF_SIZE)
     case OPT_INSTANCE
 
