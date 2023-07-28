@@ -129,7 +129,7 @@ $8 = {
 }
 write_cmd -> submit_io
   fd = parse_and_open -> 打开设备
-  buffer_size = (cfg.block_count + 1) * phys_sector_size -> 2 * 512 = 1024
+  buffer_size = (cfg.block_count + 1) * phys_sector_size -> 2 * 512 = 1024, 修复读/写内存损坏问题，当向设备发出读操作时，如果我们传递的数据大小小于当前扇区大小，ioctl() 将溢出数据缓冲区。 如果缓冲区没有足够的字节来存储结果，从设备读取多个块时也会发生这种情况。 此补丁使用请求的块计数添加了一个简单的检查，以正确分配最小大小的缓冲区
   buffer_size = cfg.data_size = 4096
   posix_memalign(&buffer, getpagesize(), buffer_size) -> 分配对齐的内存
   memset(buffer, 0, buffer_size)
