@@ -2,6 +2,14 @@ git remote add upstream https://github.com/linux-nvme/nvme-cli.git
 git fetch upstream
 git checkout -b v1.8.1
 
+
+所有命令: nvme-builtin.h, 如: ENTRY("write" -> write_cmd
+submit_io(nvme_cmd_write, "write", desc, argc, argv)
+  parse_and_open
+  nvme_io
+    ioctl(fd, NVME_IOCTL_SUBMIT_IO, &io) -> 转到内核处理
+
+
 client
 nvme discover -t rdma -a 192.168.80.100 -s 4420 #-s service id, port
 nvme connect -t rdma -n "nqn.2016-06.io.spdk:cnode1" -a 192.168.80.100 -s 4420
@@ -96,3 +104,4 @@ rdma_cms:    rdma-cm
 rdma_pkey: 0x0000
 
 
+nvme write
